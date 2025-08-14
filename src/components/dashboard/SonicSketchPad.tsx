@@ -5,6 +5,8 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Loader2Icon, PauseIcon, PlayIcon } from "lucide-react";
 import { Slider } from "../ui/slider";
+import { Label } from "../ui/label";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 type SonicSketchpadProps = {
   playedNotes: PlayedNote[];
@@ -19,10 +21,19 @@ const SonicSketchpad = ({
   const [loading, setLoading] = useState<boolean>(false);
   const synthRef = useRef<Tone.Synth | Tone.Sampler | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [selectedTheme, setSelectedTheme] = useState<string>("upbeat");
   const [bpm, setBpm] = useState<number>(120);
   useEffect(() => {
     Tone.Transport.bpm.value = bpm;
   }, [bpm]);
+  const themes = [
+    { value: "mental", label: "Mental & Introspective" },
+    { value: "upbeat", label: "Upbeat & Energetic" },
+    { value: "melancholic", label: "Melancholic & Somber" },
+    { value: "jazzy", label: "Jazzy & Smooth" },
+    { value: "epic", label: "Epic & Cinematic" },
+    { value: "ambient", label: "Ambient & Relaxing" },
+  ];
   const handleGenerate = async () => {
     if (!prompt) return;
     setLoading(true);
@@ -40,7 +51,7 @@ const SonicSketchpad = ({
               {
                 parts: [
                   {
-                    text: `Generate a short melody as a JSON array of note strings (e.g., ["C4", "D4", "E4"]) based on the prompt: "${prompt}". Respond only with the JSON array, no additional text.`,
+                    text: `Generate a melody as a JSON array of at least 20 note strings (e.g., ["C4", "D4", "E4", ...]) based on the prompt: "${prompt}". You should follow this theme "${selectedTheme.toUpperCase()}" Respond only with the JSON array, no additional text`,
                   },
                 ],
               },
@@ -90,6 +101,29 @@ const SonicSketchpad = ({
   return (
     <div className="bg-primary-900 rounded-lg px-6 py-4">
       <p className="text-white font-semibold text-2xl">Sonic Sketchpad</p>
+      <div className="my-4 flex flex-col gap-4">
+        <div>
+          <p className="text-white font-semibold text-lg mb-2">Select Theme</p>
+          <RadioGroup
+            defaultValue="upbeat"
+            onValueChange={setSelectedTheme}
+            className="grid grid-cols-2 gap-4"
+          >
+            {themes.map((theme) => (
+              <div key={theme.value} className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value={theme.value}
+                  id={theme.value}
+                  className="text-white border-white"
+                />
+                <Label htmlFor={theme.value} className="text-white">
+                  {theme.label}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
+      </div>
       <div className="my-4 flex flex-col gap-2">
         <Input
           value={prompt}
