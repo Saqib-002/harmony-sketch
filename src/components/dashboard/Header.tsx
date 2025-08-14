@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { useAuthStore } from "../../stores/authStore";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import Logo from "../../assets/logo.png"
 
 const DashboardHeader = () => {
   const { user, logout } = useAuthStore();
@@ -13,9 +14,9 @@ const DashboardHeader = () => {
     <div className="bg-primary-900 text-white p-6 sticky top-0 z-10 flex justify-between items-center h-24">
       <Link
         to="/"
-        className="text-xl font-semibold hover:text-blue-200 transition-colors duration-300"
+        className="text-xl font-semibold  rounded-full p-2 hover:bg-primary-100 transition-colors duration-300"
       >
-        Harmony Sketch
+        <img src={Logo} className="size-8 shadow-2xl" alt="Description" />
       </Link>
       <div className="flex items-center gap-4">
         <Button
