@@ -24,10 +24,13 @@ const MelodyPanel = ({
           Scale:
         </label>
         <Select value={selectedScale} onValueChange={onScaleChange}>
-          <SelectTrigger id="scale" className="bg-primary-800 w-[150px]">
+          <SelectTrigger
+            id="scale"
+            className="bg-primary-100 text-white border-blue-900 w-[150px]"
+          >
             <SelectValue placeholder="Select a scale" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-primary-100 text-white border-blue-900">
             {Object.keys(PIANO_SCALES).map((scale) => (
               <SelectItem key={scale} value={scale}>
                 {scale.charAt(0).toUpperCase() + scale.slice(1)}
@@ -44,10 +47,13 @@ const MelodyPanel = ({
           value={String(selectedOctave)}
           onValueChange={(value) => onOctaveChange(Number(value))}
         >
-          <SelectTrigger id="octave" className="bg-primary-800 w-[100px]">
+          <SelectTrigger
+            id="octave"
+            className="bg-primary-100 text-white border-blue-900 w-[100px]"
+          >
             <SelectValue placeholder="Select an octave" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-primary-100 text-white border-blue-900">
             {octaves.map((octave) => (
               <SelectItem key={octave} value={String(octave)}>
                 {octave}
@@ -61,10 +67,13 @@ const MelodyPanel = ({
           Instrument:
         </label>
         <Select value={selectedInstrument} onValueChange={onInstrumentChange}>
-          <SelectTrigger id="instrument" className="bg-primary-800 w-[150px]">
+          <SelectTrigger
+            id="instrument"
+            className="bg-primary-100 text-white border-blue-900 w-[150px]"
+          >
             <SelectValue placeholder="Select an instrument" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-primary-100 text-white border-blue-900">
             {INSTRUMENTS.map((instrument) => (
               <SelectItem key={instrument} value={instrument}>
                 {instrument.charAt(0).toUpperCase() + instrument.slice(1)}

@@ -7,7 +7,7 @@ const LandingPage = () => {
     <div className="bg-primary-100 h-full text-white overflow-y-scroll">
       <Navbar />
       <section
-        className="py-6 flex h-[calc(100vh-76px)] justify-center items-center bg-cover bg-no-repeat bg-center"
+        className="py-6 flex h-[calc(100vh-96px)] justify-center items-center bg-cover bg-no-repeat bg-center"
         style={{ backgroundImage: `url(${heroBg})` }}
       >
         <div className="bg-black/70 h-max px-36 py-8 rounded-xl backdrop-blur-md max-w-4xl flex flex-col gap-4 items-center">
@@ -79,7 +79,7 @@ const LandingPage = () => {
           </a>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

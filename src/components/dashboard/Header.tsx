@@ -1,10 +1,35 @@
+import { Link } from "react-router";
+import { useAuthStore } from "../../stores/authStore";
+import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 const DashboardHeader = () => {
+  const { user, logout } = useAuthStore();
+  const handleLogout = async () => {
+    await logout();
+    toast.success("Logged out successfully");
+  };
   return (
-    <div className="bg-primary-900 text-white px-8 py-4 rounded-lg">
-        <p className="text-xl font-semibold">Harmony Sketch</p>
+    <div className="bg-primary-900 text-white p-6 sticky top-0 z-10 flex justify-between items-center h-24">
+      <Link
+        to="/"
+        className="text-xl font-semibold hover:text-blue-200 transition-colors duration-300"
+      >
+        Harmony Sketch
+      </Link>
+      <div className="flex items-center gap-4">
+        <Button
+          className="text-lg font-semibold bg-blue-600 cursor-pointer hover:bg-blue-700 transition-colors duration-300 rounded-full"
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
+        <p className="bg-blue-600 px-4 text-xl py-2 rounded-full w-max">
+          {user?.email?.[0].toUpperCase()}
+        </p>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardHeader
+export default DashboardHeader;

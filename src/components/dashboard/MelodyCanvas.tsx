@@ -10,11 +10,7 @@ type MelodyCanvasProps = {
   setPlayedNotes: React.Dispatch<React.SetStateAction<PlayedNote[]>>;
 };
 
-
-const MelodyCanvas = ({
-  playedNotes,
-  setPlayedNotes,
-}: MelodyCanvasProps) => {
+const MelodyCanvas = ({ playedNotes, setPlayedNotes }: MelodyCanvasProps) => {
   const [instrument, setInstrument] = useState<
     Tone.Sampler | Tone.Synth | null
   >(null);
@@ -22,6 +18,7 @@ const MelodyCanvas = ({
   const [selectedOctave, setSelectedOctave] = useState<number>(4);
   const [selectedInstrument, setSelectedInstrument] =
     useState<InstrumentType>("piano");
+  const [pressedKey, setPressedKey] = useState<number | null>(null);
   const pianoKeys = useMemo(() => {
     return generatePianoKeys(selectedScale, selectedOctave);
   }, [selectedScale, selectedOctave]);
@@ -49,6 +46,8 @@ const MelodyCanvas = ({
     if (instrument) {
       instrument.triggerAttackRelease(Tone.Midi(midi).toNote(), "8n");
       setPlayedNotes((prev) => [...prev, { note, time: Date.now() }]);
+      setPressedKey(midi);
+      setTimeout(() => setPressedKey(null), 150);
     }
   };
   const handleScaleChange = (scale: string) => {
@@ -77,11 +76,15 @@ const MelodyCanvas = ({
           {pianoKeys.map((key) => (
             <button
               key={key.midi}
-              className={`border text-xs border-gray-700 rounded-xs focus:outline-none
+              className={`border text-xs border-gray-700 rounded-xs rounded-b-md focus:outline-none transition-all duration-150
                 ${
                   key.isBlack
-                    ? "bg-black text-white h-24 w-8 z-10 mx-[-16px]"
-                    : "bg-white text-black h-36 w-10 z-0 flex flex-col items-center justify-end pb-2"
+                    ? `bg-gradient-to-b from-black to-gray-800 text-white h-24 w-8 z-10 mx-[-16px] 
+                    hover:from-gray-900 hover:to-gray-700 hover:shadow-md
+                    ${pressedKey === key.midi ? "scale-95 bg-gray-700" : ""}`
+                    : `bg-gradient-to-b from-white to-gray-100 text-black h-36 w-10 z-0 flex flex-col items-center justify-end pb-2
+                    hover:bg-gray-50 hover:shadow-md
+                    ${pressedKey === key.midi ? "scale-95 bg-gray-200" : ""}`
                 }`}
               style={{
                 marginLeft: key.isBlack ? "-16px" : "0",
@@ -95,7 +98,7 @@ const MelodyCanvas = ({
           ))}
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 h-56">
         <p className="text-white font-semibold text-lg">Played Notes</p>
         <div className="bg-primary-800 p-4 rounded-lg min-h-[100px] flex flex-wrap gap-2">
           {playedNotes.length === 0 ? (
@@ -104,7 +107,7 @@ const MelodyCanvas = ({
             playedNotes.map((note, index) => (
               <span
                 key={index}
-                className="bg-primary-700 text-white px-2 py-1 rounded"
+                className="bg-primary-100 border-blue-800 bolder-solid border size-max text-white px-2 py-1 rounded"
               >
                 {note.note}
               </span>

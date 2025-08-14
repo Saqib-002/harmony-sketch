@@ -9,7 +9,7 @@ export const PIANO_SCALES: { [key: string]: string[] } = {
   minorPentatonic: ["C", "D#", "F", "G", "A#"],
 };
 export const OCTAVE = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-export const INSTRUMENTS: InstrumentType[] = ["piano", "synth"];
+export const INSTRUMENTS: InstrumentType[] = ["piano"];
 
 // Constants for instrument configurations
 export const INSTRUMENT_CONFIGS: {
