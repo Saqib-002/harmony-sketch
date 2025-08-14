@@ -1,64 +1,45 @@
 import { useEffect, useMemo, useState } from "react";
 import * as Tone from "tone";
 import MelodyPanel from "./MelodyPanel";
-import type { PlayedNote } from "../../types";
+import type { InstrumentType, PlayedNote } from "../../types";
 import { generatePianoKeys } from "../../lib/pianoUtils";
+import { INSTRUMENT_CONFIGS } from "../../contants";
 
 const MelodyCanvas = () => {
-  const [sampler, setSampler] = useState<Tone.Sampler | null>(null);
+  const [instrument, setInstrument] = useState<
+    Tone.Sampler | Tone.Synth | null
+  >(null);
   const [playedNotes, setPlayedNotes] = useState<PlayedNote[]>([]);
   const [selectedScale, setSelectedScale] = useState<string>("chromatic");
   const [selectedOctave, setSelectedOctave] = useState<number>(4);
+  const [selectedInstrument, setSelectedInstrument] =
+    useState<InstrumentType>("piano");
   const pianoKeys = useMemo(() => {
     return generatePianoKeys(selectedScale, selectedOctave);
   }, [selectedScale, selectedOctave]);
   useEffect(() => {
-    const pianoSampler = new Tone.Sampler({
-      urls: {
-        A0: "A0.mp3",
-        C1: "C1.mp3",
-        "D#1": "Ds1.mp3",
-        "F#1": "Fs1.mp3",
-        A1: "A1.mp3",
-        C2: "C2.mp3",
-        "D#2": "Ds2.mp3",
-        "F#2": "Fs2.mp3",
-        A2: "A2.mp3",
-        C3: "C3.mp3",
-        "D#3": "Ds3.mp3",
-        "F#3": "Fs3.mp3",
-        A3: "A3.mp3",
-        C4: "C4.mp3",
-        "D#4": "Ds4.mp3",
-        "F#4": "Fs4.mp3",
-        A4: "A4.mp3",
-        C5: "C5.mp3",
-        "D#5": "Ds5.mp3",
-        "F#5": "Fs5.mp3",
-        A5: "A5.mp3",
-        C6: "C6.mp3",
-        "D#6": "Ds6.mp3",
-        "F#6": "Fs6.mp3",
-        A6: "A6.mp3",
-        C7: "C7.mp3",
-        "D#7": "Ds7.mp3",
-        "F#7": "Fs7.mp3",
-        A7: "A7.mp3",
-        C8: "C8.mp3",
-      },
-      baseUrl: "https://tonejs.github.io/audio/salamander/",
-    }).toDestination();
-
-    setSampler(pianoSampler);
-
+    let newInstrument: Tone.Sampler | Tone.Synth | null = null;
+    if (selectedInstrument === "piano") {
+      const config = INSTRUMENT_CONFIGS[selectedInstrument];
+      newInstrument = new Tone.Sampler({
+        urls: config.urls,
+        baseUrl: config.baseUrl,
+      }).toDestination();
+    } else {
+      const config = INSTRUMENT_CONFIGS[selectedInstrument];
+      newInstrument = config.create();
+    }
+    setInstrument(newInstrument);
     return () => {
-      pianoSampler.dispose();
+      if (newInstrument) {
+        newInstrument.dispose();
+      }
     };
-  }, []);
+  }, [selectedInstrument]);
   const handleKeyClick = async (note: string, midi: number) => {
     await Tone.start();
-    if (sampler) {
-      sampler.triggerAttackRelease(Tone.Midi(midi).toNote(), "8n");
+    if (instrument) {
+      instrument.triggerAttackRelease(Tone.Midi(midi).toNote(), "8n");
       setPlayedNotes((prev) => [...prev, { note, time: Date.now() }]);
     }
   };
@@ -69,14 +50,19 @@ const MelodyCanvas = () => {
   const handleOctaveChange = (octave: number) => {
     setSelectedOctave(octave);
   };
+  const handleInstrumentChange = (instrument: InstrumentType) => {
+    setSelectedInstrument(instrument);
+  };
   return (
     <div className="col-span-2 bg-primary-900 rounded-lg px-6 py-4">
       <p className="text-white font-semibold text-2xl">MelodyCanvas</p>
       <MelodyPanel
         selectedScale={selectedScale}
         selectedOctave={selectedOctave}
+        selectedInstrument={selectedInstrument}
         onScaleChange={handleScaleChange}
         onOctaveChange={handleOctaveChange}
+        onInstrumentChange={handleInstrumentChange}
       />
       <div className="relative flex w-full overflow-x-auto justify-center">
         <div className="flex">
