@@ -1,3 +1,4 @@
+import type { User } from "firebase/auth";
 import * as Tone from "tone";
 // Interface for a piano key
 export interface PianoKey {
@@ -30,3 +31,12 @@ export type MelodyPanelProps = {
   selectedInstrument: InstrumentType;
   onInstrumentChange: (instrument: InstrumentType) => void;
 };
+export interface AuthState {
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  signup: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  initAuth: () => void;
+}
