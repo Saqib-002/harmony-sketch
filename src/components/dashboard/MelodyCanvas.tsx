@@ -5,11 +5,19 @@ import type { InstrumentType, PlayedNote } from "../../types";
 import { generatePianoKeys } from "../../lib/pianoUtils";
 import { INSTRUMENT_CONFIGS } from "../../contants";
 
-const MelodyCanvas = () => {
+type MelodyCanvasProps = {
+  playedNotes: PlayedNote[];
+  setPlayedNotes: React.Dispatch<React.SetStateAction<PlayedNote[]>>;
+};
+
+
+const MelodyCanvas = ({
+  playedNotes,
+  setPlayedNotes,
+}: MelodyCanvasProps) => {
   const [instrument, setInstrument] = useState<
     Tone.Sampler | Tone.Synth | null
   >(null);
-  const [playedNotes, setPlayedNotes] = useState<PlayedNote[]>([]);
   const [selectedScale, setSelectedScale] = useState<string>("chromatic");
   const [selectedOctave, setSelectedOctave] = useState<number>(4);
   const [selectedInstrument, setSelectedInstrument] =
