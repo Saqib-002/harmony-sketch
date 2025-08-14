@@ -59,10 +59,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user: null });
   },
   initAuth: () => {
-    setPersistence(auth, browserLocalPersistence).then(() => {
       onAuthStateChanged(auth, (user) => {
         set({ user, loading: false });
       });
-    });
   },
 }));
